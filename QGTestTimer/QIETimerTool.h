@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @class QIETimerToolModel;
+//void (^ __nullable)(void))completion
+typedef void(^callback)(void);
 typedef void(^QIETimerToolCallBackBlock)(void);
 
 @interface QIETimerToolModel : NSObject
@@ -18,13 +20,13 @@ typedef void(^QIETimerToolCallBackBlock)(void);
     repeat : 是否重复
     callback : 计时器到时间的回调 (totalTimeValue : 从开始计时到回调的值的累加)
  */
-+(instancetype)creatTimerToolModelWithTimeInterval:(NSTimeInterval)timeInterval repeat:(BOOL)repeat syncCallback:(QIETimerToolCallBackBlock)syncCallback asyncCallback:(QIETimerToolCallBackBlock)asyncCallback;
++(instancetype)creatTimerToolModelWithTimeInterval:(NSTimeInterval)timeInterval repeat:(BOOL)repeat callback:(QIETimerToolCallBackBlock)callback;
 
 @end
 
 @interface QIETimerTool : NSObject
 
-+(QIETimerToolModel *)addTimerActionWithTimeInterval:(NSTimeInterval)timeInterval repeat:(BOOL)repeat syncCallback:(QIETimerToolCallBackBlock)syncCallback asyncCallback:(QIETimerToolCallBackBlock)asyncCallback;
++(QIETimerToolModel *)addTimerActionWithTimeInterval:(NSTimeInterval)timeInterval repeat:(BOOL)repeat callback:(QIETimerToolCallBackBlock)callback;
 
 /** 添加一个计时器事件 */
 +(void)addTimerToolModel:(QIETimerToolModel *)timerToolModel;

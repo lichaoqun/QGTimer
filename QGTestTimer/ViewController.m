@@ -27,28 +27,21 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
     
-    UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(90, 90, 90, 90)];
-    btn.backgroundColor = [UIColor redColor];
-    [btn addTarget:self action:@selector(onClick:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btn];
+    for (NSInteger i = 0; i < 10; i++) {
+        QIETimerToolModel *model1  = [QIETimerToolModel creatTimerToolModelWithTimeInterval:0.1 repeat:YES callback:^{
+            QIETimerToolModel *model2  = [QIETimerToolModel creatTimerToolModelWithTimeInterval:0.1 repeat:YES callback:nil];
+            [QIETimerTool addTimerToolModel:model2];
+            NSLog(@"callback....");
+        }];
+        [QIETimerTool addTimerToolModel:model1];
+        NSLog(@"forforfor.....");
+    };
     
-    QIETimerToolModel *model1  = [QIETimerToolModel creatTimerToolModelWithTimeInterval:5 repeat:YES syncCallback:^{
-        NSLog(@"-============");
-    } asyncCallback:nil];
-    NSLog(@"-========");
-    [QIETimerTool addTimerToolModel:model1];
-    
-    self.model =  [QIETimerTool addTimerActionWithTimeInterval:0.5 repeat:YES syncCallback:^{
-        NSLog(@"-XXXX");
-    } asyncCallback:nil];
-
-//    QIETimerToolModel *model3  = [QIETimerToolModel creatTimerToolModel:0.3 repeat:YES callback:^(void) {
-//        NSLog(@"0.3--0.3-0.3--0.3--0.3--0.3--0.3--0.3");
+//    [QIETimerTool addTimerActionWithTimeInterval:0.1 repeat:YES callback:^{
+//        NSLog(@"1111111");
+//        [NSThread sleepForTimeInterval:3];
 //    }];
-//    [[QIETimerTool shareTimerTool] addTimerToolModel:model3];
-
 }
 
 -(void)onClick:(UIButton *)sender{

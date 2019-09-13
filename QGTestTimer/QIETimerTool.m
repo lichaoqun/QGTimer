@@ -17,10 +17,7 @@
 @property (nonatomic, assign)NSTimeInterval timeInterval;
 
 /** 回调的 block */
-@property (nonatomic, copy) QIETimerToolCallBackBlock syncCallback;
-
-/** 回调的 block */
-@property (nonatomic, copy) QIETimerToolCallBackBlock asyncCallback;
+@property (nonatomic, copy) QIETimerToolCallBackBlock callback;
 
 
 /** 这个model 加入到计时器的时间 */
@@ -31,12 +28,11 @@
 @implementation QIETimerToolModel
 
 /** 初始化方法 */
-+(instancetype)creatTimerToolModelWithTimeInterval:(NSTimeInterval)timeInterval repeat:(BOOL)repeat syncCallback:(QIETimerToolCallBackBlock)syncCallback asyncCallback:(QIETimerToolCallBackBlock)asyncCallback{
++(instancetype)creatTimerToolModelWithTimeInterval:(NSTimeInterval)timeInterval repeat:(BOOL)repeat callback:(QIETimerToolCallBackBlock)callback{
     QIETimerToolModel *model = [[QIETimerToolModel alloc]init];
     model.timeInterval = timeInterval;
     model.repeat = repeat;
-    model.asyncCallback = asyncCallback;
-    model.syncCallback = syncCallback;
+    model.callback = callback;
     return model;
 }
 
@@ -75,8 +71,8 @@ static QIETimerTool *timerTool_ = nil;
     return timerTool_;
 }
 
-+(QIETimerToolModel *)addTimerActionWithTimeInterval:(NSTimeInterval)timeInterval repeat:(BOOL)repeat syncCallback:(QIETimerToolCallBackBlock)syncCallback asyncCallback:(QIETimerToolCallBackBlock)asyncCallback{
-    QIETimerToolModel *model = [QIETimerToolModel creatTimerToolModelWithTimeInterval:timeInterval repeat:repeat syncCallback:syncCallback asyncCallback:asyncCallback];
++(QIETimerToolModel *)addTimerActionWithTimeInterval:(NSTimeInterval)timeInterval repeat:(BOOL)repeat callback:(QIETimerToolCallBackBlock)callback{
+    QIETimerToolModel *model = [QIETimerToolModel creatTimerToolModelWithTimeInterval:timeInterval repeat:repeat callback:callback];
     [self addTimerToolModel:model];
     return model;
 }
@@ -88,13 +84,11 @@ static QIETimerTool *timerTool_ = nil;
         timerToolModel.startTimeValue = timerTool.totalTimerValue + timerToolModel.timeInterval;
         NSString *key = [NSString stringWithFormat:@"%.1f", timerToolModel.startTimeValue];
         NSMutableSet *timerModesSet = [timerTool.timerActionDic objectForKey:key];
-        if (!timerModesSet) {
-            timerModesSet = [NSMutableSet set];
-            [timerTool.timerActionDic setObject:timerModesSet forKey:key];
-        }
+        timerModesSet = timerModesSet ? : [NSMutableSet set];
+        [timerTool.timerActionDic setObject:timerModesSet forKey:key];
         [timerModesSet addObject:timerToolModel];
     };
-    dispatch_sync(timerTool.queue, block);
+    dispatch_async(timerTool.queue, block);
 }
 
 /** 删除一个计时器的事件 */
@@ -105,9 +99,8 @@ static QIETimerTool *timerTool_ = nil;
         NSMutableSet *timerModesSet = [timerTool.timerActionDic objectForKey:key];
         [timerModesSet removeObject:timerToolModel];
         if (timerModesSet.count == 0) [timerTool.timerActionDic removeObjectForKey:key];
-        NSLog(@"%@==%@", key, timerTool.timerActionDic);
     };
-    dispatch_sync(timerTool.queue, block);
+    dispatch_async(timerTool.queue, block);
 }
 
 /** 开始计时器 */
@@ -117,7 +110,7 @@ static QIETimerTool *timerTool_ = nil;
 
     // - 创建一个每0.1s 执行一次的计时器
     NSTimeInterval timeInterval = 0.1;
-    _queue = dispatch_queue_create("com.tencent.tv.timerTool.queue", DISPATCH_QUEUE_CONCURRENT);
+    _queue = dispatch_queue_create("com.tencent.tv.timerTool.queue", DISPATCH_QUEUE_SERIAL);
     _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _queue);
     dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeInterval * NSEC_PER_SEC));
     uint64_t interval = (uint64_t)(timeInterval * NSEC_PER_SEC);
@@ -133,19 +126,14 @@ static QIETimerTool *timerTool_ = nil;
     _totalTimerValue = totalTimerValue;
     NSString *timerAcitonKey = [NSString stringWithFormat:@"%.1f", (self.totalTimerValue)];
     NSMutableSet *timerModesSet = [self.timerActionDic objectForKey:timerAcitonKey];
-    NSLog(@"%@----------%@", timerAcitonKey, self.timerActionDic);
     [timerModesSet enumerateObjectsUsingBlock:^(QIETimerToolModel *pModel, BOOL * _Nonnull stop) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            !pModel.callback ? : pModel.callback() ;
+        });
         [QIETimerTool removeTimerToolModel:pModel];
         if (pModel.repeat){
             [QIETimerTool addTimerToolModel:pModel];
         }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            !pModel.syncCallback ? : pModel.syncCallback() ;
-        });
-        dispatch_async(self.queue, ^{
-            !pModel.asyncCallback ? : pModel.asyncCallback() ;
-        });
-
     }];
 }
 
