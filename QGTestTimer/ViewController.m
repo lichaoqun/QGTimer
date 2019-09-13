@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "QIETimerTool.h"
+#import "QIELiveRoomTimerMgr.h"
 
 
 
@@ -29,12 +29,12 @@
     [super viewDidLoad];
     
     for (NSInteger i = 0; i < 10; i++) {
-        QIETimerToolModel *model1  = [QIETimerToolModel creatTimerToolModelWithTimeInterval:0.1 repeat:YES callback:^{
-            QIETimerToolModel *model2  = [QIETimerToolModel creatTimerToolModelWithTimeInterval:0.1 repeat:YES callback:nil];
-            [QIETimerTool addTimerToolModel:model2];
+        QIELiveRoomTimerModel *model1  = [QIELiveRoomTimerModel creatTimerToolModelWithTimeInterval:0.1 repeat:YES callback:^{
+            QIELiveRoomTimerModel *model2  = [QIELiveRoomTimerModel creatTimerToolModelWithTimeInterval:0.1 repeat:YES callback:nil];
+            [QIELiveRoomTimerMgr addTimerToolModel:model2];
             NSLog(@"callback....");
         }];
-        [QIETimerTool addTimerToolModel:model1];
+        [QIELiveRoomTimerMgr addTimerToolModel:model1];
         NSLog(@"forforfor.....");
     };
     
@@ -45,7 +45,7 @@
 }
 
 -(void)onClick:(UIButton *)sender{
-    [QIETimerTool removeTimerToolModel:self.model];
+    [QIELiveRoomTimerMgr removeTimerToolModel:self.model];
 }
 
 -(void)onTimerDo{

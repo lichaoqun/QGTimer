@@ -8,12 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@class QIETimerToolModel;
-//void (^ __nullable)(void))completion
-typedef void(^callback)(void);
 typedef void(^QIETimerToolCallBackBlock)(void);
 
-@interface QIETimerToolModel : NSObject
+@interface QIELiveRoomTimerModel : NSObject
 
 /** 创建计时器
     timeInterval : 调用时间间隔
@@ -24,17 +21,17 @@ typedef void(^QIETimerToolCallBackBlock)(void);
 
 @end
 
-@interface QIETimerTool : NSObject
+@interface QIELiveRoomTimerMgr : NSObject
 
-+(QIETimerToolModel *)addTimerActionWithTimeInterval:(NSTimeInterval)timeInterval repeat:(BOOL)repeat callback:(QIETimerToolCallBackBlock)callback;
++(QIELiveRoomTimerModel *)addTimerActionWithTimeInterval:(NSTimeInterval)timeInterval repeat:(BOOL)repeat callback:(QIETimerToolCallBackBlock)callback;
 
 /** 添加一个计时器事件 */
-+(void)addTimerToolModel:(QIETimerToolModel *)timerToolModel;
++(void)addTimerToolModel:(QIELiveRoomTimerModel *)timerToolModel;
 
 /** 删除一个计时器的事件 */
-+(void)removeTimerToolModel:(QIETimerToolModel *)timerToolModel;
++(void)removeTimerToolModel:(QIELiveRoomTimerModel *)timerToolModel;
 
 /** 移除计时器 */
-+(void)destoryTimerTool;
++(void)destoryTimerMgr;
 
 @end

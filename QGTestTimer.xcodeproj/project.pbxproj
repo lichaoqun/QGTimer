@@ -13,7 +13,7 @@
 		341818B72243381500E8C341 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 341818B62243381500E8C341 /* Assets.xcassets */; };
 		341818BA2243381500E8C341 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 341818B82243381500E8C341 /* LaunchScreen.storyboard */; };
 		341818BD2243381500E8C341 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 341818BC2243381500E8C341 /* main.m */; };
-		341818C52243382A00E8C341 /* QIETimerTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 341818C42243382A00E8C341 /* QIETimerTool.m */; };
+		341818C52243382A00E8C341 /* QIELiveRoomTimerMgr.m in Sources */ = {isa = PBXBuildFile; fileRef = 341818C42243382A00E8C341 /* QIELiveRoomTimerMgr.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,8 +27,8 @@
 		341818B92243381500E8C341 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		341818BB2243381500E8C341 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		341818BC2243381500E8C341 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		341818C32243382A00E8C341 /* QIETimerTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIETimerTool.h; sourceTree = "<group>"; };
-		341818C42243382A00E8C341 /* QIETimerTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIETimerTool.m; sourceTree = "<group>"; };
+		341818C32243382A00E8C341 /* QIELiveRoomTimerMgr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIELiveRoomTimerMgr.h; sourceTree = "<group>"; };
+		341818C42243382A00E8C341 /* QIELiveRoomTimerMgr.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIELiveRoomTimerMgr.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,8 +65,8 @@
 				341818AE2243381100E8C341 /* AppDelegate.m */,
 				341818B02243381100E8C341 /* ViewController.h */,
 				341818B12243381100E8C341 /* ViewController.m */,
-				341818C32243382A00E8C341 /* QIETimerTool.h */,
-				341818C42243382A00E8C341 /* QIETimerTool.m */,
+				341818C32243382A00E8C341 /* QIELiveRoomTimerMgr.h */,
+				341818C42243382A00E8C341 /* QIELiveRoomTimerMgr.m */,
 				341818B32243381100E8C341 /* Main.storyboard */,
 				341818B62243381500E8C341 /* Assets.xcassets */,
 				341818B82243381500E8C341 /* LaunchScreen.storyboard */,
@@ -149,7 +149,7 @@
 				341818B22243381100E8C341 /* ViewController.m in Sources */,
 				341818BD2243381500E8C341 /* main.m in Sources */,
 				341818AF2243381100E8C341 /* AppDelegate.m in Sources */,
-				341818C52243382A00E8C341 /* QIETimerTool.m in Sources */,
+				341818C52243382A00E8C341 /* QIELiveRoomTimerMgr.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

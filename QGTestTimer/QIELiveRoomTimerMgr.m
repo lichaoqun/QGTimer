@@ -6,9 +6,9 @@
 //  Copyright © 2019 李超群. All rights reserved.
 //
 
-#import "QIETimerTool.h"
+#import "QIELiveRoomTimerMgr.h"
 
-@interface QIETimerToolModel ()
+@interface QIELiveRoomTimerModel ()
 
 /** 是否重复 */
 @property (nonatomic, assign) BOOL repeat;
@@ -25,11 +25,11 @@
 
 @end
 
-@implementation QIETimerToolModel
+@implementation QIELiveRoomTimerModel
 
 /** 初始化方法 */
 +(instancetype)creatTimerToolModelWithTimeInterval:(NSTimeInterval)timeInterval repeat:(BOOL)repeat callback:(QIETimerToolCallBackBlock)callback{
-    QIETimerToolModel *model = [[QIETimerToolModel alloc]init];
+    QIELiveRoomTimerModel *model = [[QIELiveRoomTimerModel alloc]init];
     model.timeInterval = timeInterval;
     model.repeat = repeat;
     model.callback = callback;
@@ -38,7 +38,7 @@
 
 @end
 
-@interface QIETimerTool ()
+@interface QIELiveRoomTimerMgr ()
 
 /** 计时器 */
 @property(nonatomic,strong) dispatch_source_t timer;
@@ -54,16 +54,16 @@
 
 @end
 
-@implementation QIETimerTool
+@implementation QIELiveRoomTimerMgr
 
 /** 初始化方法 */
-static QIETimerTool *timerTool_ = nil;
+static QIELiveRoomTimerMgr *timerTool_ = nil;
 +(instancetype)shareTimerTool{
     if (!timerTool_) {
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
         if (!timerTool_) {
-            timerTool_ = [[QIETimerTool alloc]init];
+            timerTool_ = [[QIELiveRoomTimerMgr alloc]init];
             [timerTool_ starTimer];
         }
         dispatch_semaphore_signal(semaphore);
@@ -71,15 +71,15 @@ static QIETimerTool *timerTool_ = nil;
     return timerTool_;
 }
 
-+(QIETimerToolModel *)addTimerActionWithTimeInterval:(NSTimeInterval)timeInterval repeat:(BOOL)repeat callback:(QIETimerToolCallBackBlock)callback{
-    QIETimerToolModel *model = [QIETimerToolModel creatTimerToolModelWithTimeInterval:timeInterval repeat:repeat callback:callback];
++(QIELiveRoomTimerModel *)addTimerActionWithTimeInterval:(NSTimeInterval)timeInterval repeat:(BOOL)repeat callback:(QIETimerToolCallBackBlock)callback{
+    QIELiveRoomTimerModel *model = [QIELiveRoomTimerModel creatTimerToolModelWithTimeInterval:timeInterval repeat:repeat callback:callback];
     [self addTimerToolModel:model];
     return model;
 }
 
 /** 添加一个计时器事件 */
-+(void)addTimerToolModel:(QIETimerToolModel *)timerToolModel{
-    QIETimerTool *timerTool = [QIETimerTool shareTimerTool];
++(void)addTimerToolModel:(QIELiveRoomTimerModel *)timerToolModel{
+    QIELiveRoomTimerMgr *timerTool = [QIELiveRoomTimerMgr shareTimerTool];
     dispatch_block_t block = ^{
         timerToolModel.startTimeValue = timerTool.totalTimerValue + timerToolModel.timeInterval;
         NSString *key = [NSString stringWithFormat:@"%.1f", timerToolModel.startTimeValue];
@@ -92,8 +92,8 @@ static QIETimerTool *timerTool_ = nil;
 }
 
 /** 删除一个计时器的事件 */
-+(void)removeTimerToolModel:(QIETimerToolModel *)timerToolModel{
-    QIETimerTool *timerTool = [QIETimerTool shareTimerTool];
++(void)removeTimerToolModel:(QIELiveRoomTimerModel *)timerToolModel{
+    QIELiveRoomTimerMgr *timerTool = [QIELiveRoomTimerMgr shareTimerTool];
     dispatch_block_t block = ^{
         NSString *key = [NSString stringWithFormat:@"%.1f", timerToolModel.startTimeValue];
         NSMutableSet *timerModesSet = [timerTool.timerActionDic objectForKey:key];
@@ -126,19 +126,19 @@ static QIETimerTool *timerTool_ = nil;
     _totalTimerValue = totalTimerValue;
     NSString *timerAcitonKey = [NSString stringWithFormat:@"%.1f", (self.totalTimerValue)];
     NSMutableSet *timerModesSet = [self.timerActionDic objectForKey:timerAcitonKey];
-    [timerModesSet enumerateObjectsUsingBlock:^(QIETimerToolModel *pModel, BOOL * _Nonnull stop) {
+    [timerModesSet enumerateObjectsUsingBlock:^(QIELiveRoomTimerModel *pModel, BOOL * _Nonnull stop) {
         dispatch_async(dispatch_get_main_queue(), ^{
             !pModel.callback ? : pModel.callback() ;
         });
-        [QIETimerTool removeTimerToolModel:pModel];
+        [QIELiveRoomTimerMgr removeTimerToolModel:pModel];
         if (pModel.repeat){
-            [QIETimerTool addTimerToolModel:pModel];
+            [QIELiveRoomTimerMgr addTimerToolModel:pModel];
         }
     }];
 }
 
 /** 销毁计时器 */
-+(void)destoryTimerTool{
++(void)destoryTimerMgr{
     if (timerTool_) {
         [timerTool_.timerActionDic removeAllObjects];
         dispatch_source_cancel(timerTool_.timer);
